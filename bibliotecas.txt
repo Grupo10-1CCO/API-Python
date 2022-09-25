@@ -1,0 +1,7 @@
+Bibliotecas que precisam ser instaladas através do pip install para o pleno funcionamento do programa
+
+python -m pip install py-cpuinfo
+python -m pip install psutil
+python -m pip install mysql-connector-python
+python -m pip install matplot
+python -m pip install dashing
