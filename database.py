@@ -1,5 +1,8 @@
 import mysql.connector
 
+# cnx = conexão com o banco
+# cursor = manipulação do banco 
+
 cnx = mysql.connector.connect(user="sampUser",
                               password="samp", 
                               host="localhost", 
@@ -7,13 +10,13 @@ cnx = mysql.connector.connect(user="sampUser",
                               autocommit=True)
 
 def insert(query): 
-    try:
+    try: # o comando try serve para verificar se toos os comandos serão executados de maneira exata, caso o contrário, ele para no momento em que detectou um erro, indo para o except que informa o erro.
         cnx.reconnect()
         cursor = cnx.cursor()
         cursor.execute(query)
     except mysql.connector.connector.Error as error:
         print("ERRO {}".format(error))
-    finally:
+    finally: # Após a execução dos comandos acima, o finally fecha as conexões
         if cnx.is_connected():
             cursor.close()
             cnx.close()
@@ -24,8 +27,8 @@ def select(query, isAllRequested = False):
         cnx.reconnect()
         cursor = cnx.cursor()
         cursor.execute(query)
-        if isAllRequested:
-            dados = cursor.fetchall()
+        if isAllRequested: # verificando se retornou do banco
+            dados = cursor.fetchall() # retornando os dados do banco
         else:
             dados = cursor.fetchone()
     except mysql.connector.Error as error:

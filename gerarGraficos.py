@@ -2,11 +2,14 @@ import time
 import matplotlib.pyplot as plt
 import psutil
 import os
-import datetime
-from database import select
-from functions import conversao_bytes
-from functions import codeCleaner
+import datetime # Biblioteca para capturar a data e hora da maquina
+from database import select # Importando a função select para fazer select do banco de dados
+from functions import conversao_bytes #Importando a função coversao_bytes para converter bytes para outras medidas
+from functions import codeCleaner # Importando a função codeCleaner para limpar o terminal
 
+# Indentificando o sitema operacional e direcionando o dirtório padrão 
+# (se for Linux: /)
+# (se for Windows: C:\\ )
 if os.name == 'nt':
     sistem="C:\\"
     nome='Windows'
@@ -14,7 +17,7 @@ else:
     sistem="/"
     nome='Linux'
 
-
+#Comentar por bloco 
 def gerarGraficoDisco():
     uso_disco = psutil.disk_usage(sistem).used
     free_disco = psutil.disk_usage(sistem).free
@@ -38,6 +41,7 @@ def gerarGraficoDisco():
     plt.title ('Diagnóstico do disco')
     plt.show()
 
+#Comentar em bloco
 def gerarGraficoCpu(userId):
     query = f'select usoCpu, frequenciaCpu, dataHoraRegistro from dados, Usuario where idUsuario = {userId} order by idDados desc limit 8;'
     dados = []
@@ -61,6 +65,7 @@ def gerarGraficoCpu(userId):
     plt.title ('Uso da CPU (%)')
     plt.show()
 
+#Comentar em bloco
 def gerarGraficoCpu2(userId):
     query = f'select usoCpu, frequenciaCpu, dataHoraRegistro from dados, Usuario where idUsuario = {userId} order by idDados desc limit 8;'
     dados = []
@@ -85,6 +90,7 @@ def gerarGraficoCpu2(userId):
     plt.show()
     time.sleep(3)
 
+#Comentar em bloco
 def gerarGraficoMemoria(userId):
     query = f'select usoMemoria, dataHoraRegistro from dados, Usuario where idUsuario = {userId} order by idDados desc limit 8;'
     dados = []

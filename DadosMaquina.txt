@@ -1,31 +1,31 @@
 Data e hora do momento que foi salvo os dados:
-2022-09-12 11:13:44.660979
+2022-09-26 13:11:30.799071
 
 ━━━━━ Informações do computador ━━━━━
 
 Sistema operacional: Linux
 Versão do sistema: #26~20.04.1-Ubuntu SMP Fri Jan 7 16:27:40 UTC 2022
-Mac Address: D0:94:66:C9:EE:E1
+Mac Address: 5C:CD:5B:BF:96:CC
 Arquiterura: 64 bits
 Processador: Intel(R) Core(TM) i3-8145U CPU @ 2.10GHz
-Tempo gasto do computador desde a última vez em que foi ligado: 0.12 Horas
+Tempo gasto do computador desde a última vez em que foi ligado: 0.99 Horas
 
 ━━━━━ MEMÓRIA RAM ━━━━━
 
 Memória total:  11.57GB 
-Memória disponivel:  8.00GB 
-Uso atual:  2.91GB 
-Porcentagem de uso: 30.8%
+Memória disponivel:  7.23GB 
+Uso atual:  3.49GB 
+Porcentagem de uso: 37.5%
 
 ━━━━━ CPU ━━━━━
 
-Uso total: 24.2%
-Frequência da CPU: 2202.0Mhz
+Uso total: 10.8%
+Frequência da CPU: 2659.0Mhz
 Quantidade de núcleos: 4
 Quantidade de Threads: 2
-Uso por core: [3.8, 3.0, 3.0, 3.8]
+Uso por core: [5.6, 7.0, 5.3, 5.0]
 
 ━━━━━ Disco ━━━━━
 
 Partições: ['/'] 
-Porcentagem ocupada de cada partição: [34.0]
+Porcentagem ocupada de cada partição: [34.1]

@@ -1,26 +1,29 @@
 import datetime
 import time
-from psutil import *
+from psutil import * # Importanto TODAS as funções da PSUTIL
 import os
-import platform
-from database import insert, select
+import platform # Biblioteca para acesso aos dados do sistema operacional da maquina
+from database import insert, select 
 import cpuinfo
-from uuid import getnode as get_mac
-from random import randint
+from uuid import getnode as get_mac #Biblioteca para captirar o endereço mac da maquina
+from random import randint #Gerando um número serial aleatorio
 
-
+# Coletando qual o sistema operacional
 sistema = platform.system()
 
+# Definindo o comando para o terminal
 if sistema == "Windows":
     codeCleaner = "cls"
 elif sistema == "Linux":
     codeCleaner = "clear"
 
+# Gerando um número serial aleatório
 def randomSerial():
     num = randint(100000000,999999999)
     serial = "BRJ" + str(num)
     return serial
 
+# Função para converter bytes em KB, MB ou GB
 def conversao_bytes(valor, tipo):
     if tipo == 1:  # KB
         return valor / 1024
@@ -29,7 +32,7 @@ def conversao_bytes(valor, tipo):
     elif tipo == 3:  # GB
         return f'{valor / 1024 / 1024 / 1024: .2f}'
 
-
+# 
 def monitorar():
     while (True):
         try:
@@ -46,6 +49,8 @@ def monitorar():
 
 
             # DISCO
+            # o vetor partições serve para armazenar as divisões do disco na maquina
+            # Exemplo: Cado tenhas mais de um disco (E:, C: e D:), a estrutura de decisão armazena a identificação dos disco em partições
             particoes = []
             if sistema == "Windows":
                 for part in disk_partitions(all=False): # identificando partições
@@ -58,7 +63,7 @@ def monitorar():
             elif sistema == "Linux":
                 particoes.append("/")
 
-
+            # Coletando o uso em cada partição 
             porcentagemOcupados = [] 
             for j in particoes:
                 porcentagemOcupados.append(disk_usage(j).percent) 
@@ -78,7 +83,8 @@ def monitorar():
             print("\033[1mUso total:\033[0m ", usoCpuPorc)
 
             print("\033[1mUso por core:\033[0m")
-
+            
+            # A Função enumarate() é semelhnate ao JSON, pois sua formatação permite que selecionemos os indices 
             for i in enumerate(usoPorCore):
                 print(f'CPU_{i[0]}: {i[1]}%')
 
@@ -98,27 +104,30 @@ def monitorar():
         except KeyboardInterrupt:
             return "0"
 
-
+    # 
 def info():
     os.system(codeCleaner)
     
+    # Capturando valores os dados da CPU através da PSUTIL
     freqCpu = f'{round(cpu_freq().max, 0)}Mhz'
     qtdCores = cpu_count()
     qtdThreads = cpu_count(logical=False)
     tempoGasto = f"{round(cpu_times().user / 60 / 60, 2)} Horas"
     processador = cpuinfo.get_cpu_info()['brand_raw']
 
+    # Capturando os dados de arquitetura da maquina
     arquitetura = cpuinfo.get_cpu_info()['arch']
     if arquitetura == "X86_32":
         arquitetura = "32 bits"
     elif arquitetura == "X86_64":
         arquitetura = "64 bits"
+        # Endereço mac
+        mac = get_mac() #numero do mac
 
-        mac = get_mac()
-
+    # Editando a o numero do endereço mac em forma de string
     macString = ':'.join(("%012X" % mac) [i:i+2] for i in range(0,12,2))
 
-
+    
     versaoSistemas = platform.version()
     memoriaTotal = f'{conversao_bytes(virtual_memory().total, 3)}GB'
 
@@ -139,7 +148,7 @@ def info():
     return 0 
 
 
-        
+  # Insert no banco a cada 20s definidos no time.sleep      
 def insertPeriodico(serialNumber):
     while True:
             usoAtualMemoria = virtual_memory().percent
@@ -174,12 +183,13 @@ def insertPeriodico(serialNumber):
             time.sleep(20)
 
 
-
+# CAPTURA TODOS OS DADOS NOVAMENTE E GERA UM TXT COM OS DADOS
 def relatorio():
     os.system(codeCleaner)
 
-    hora = datetime.datetime.now()
-    with open('DadosMaquina.txt','w', encoding='utf-8') as arquivo:
+    hora = datetime.datetime.now() # Momento do registro
+    # with open usando w = sobreescrever ou entao criar um arquivo novo, do 0
+    with open('DadosMaquina.txt','w', encoding='utf-8') as arquivo: #UTF-8 teclado brasileiro
         arquivo.write("Data e hora do momento que foi salvo os dados:\n" + str(hora))
 
 
@@ -192,9 +202,9 @@ def relatorio():
 
         mac = get_mac()
     macString = ':'.join(("%012X" % mac) [i:i+2] for i in range(0,12,2))
-    tempoGasto = f"{round(cpu_times().user / 60 / 60, 2)} Horas"
+    tempoGasto = f"{round(cpu_times().user / 60 / 60, 2)} Horas" # Tempo que o computador esteve ligado
     processador = cpuinfo.get_cpu_info()['brand_raw']
-    with open('DadosMaquina.txt','a', encoding='utf-8') as arquivo:
+    with open('DadosMaquina.txt','a', encoding='utf-8') as arquivo: # WITH OPEN COM A = CONTINUAR ESCREVENDO NO FIM DO ARQUIVO!!!!!!!!!!!!!!!!!! | UTF = VOCE JA SABE
         arquivo.write("\n\n━━━━━ Informações do computador ━━━━━\n\nSistema operacional: {}\nVersão do sistema: {}\nMac Address: {}\nArquiterura: {}\nProcessador: {}\nTempo gasto do computador desde a última vez em que foi ligado: {}\n".format(sistema, versaoSistemas, macString, arquitetura, processador, tempoGasto))
 
 
@@ -202,7 +212,7 @@ def relatorio():
     memoriaDisponivel = f'{conversao_bytes(virtual_memory().available, 3)}GB'
     usoAtualMemoria = f'{conversao_bytes(virtual_memory().used, 3)}GB'
     memoriaEmUsoPerc = virtual_memory().percent
-    with open('DadosMaquina.txt','a', encoding='utf-8') as arquivo:
+    with open('DadosMaquina.txt','a', encoding='utf-8') as arquivo:# WITH OPEN COM A = VOCE JA SABE | UTF = VOCE JA SABE TAMBEM
         arquivo.write("\n━━━━━ MEMÓRIA RAM ━━━━━\n\nMemória total: {} \nMemória disponivel: {} \nUso atual: {} \nPorcentagem de uso: {}%\n".format(memoriaTotal, memoriaDisponivel, usoAtualMemoria, memoriaEmUsoPerc))
     
 
@@ -211,7 +221,7 @@ def relatorio():
     freqCpu = round(cpu_freq().current, 0)
     qtdCores = cpu_count()
     qtdThreads = cpu_count(logical=False)
-    with open('DadosMaquina.txt','a', encoding='utf-8') as arquivo:
+    with open('DadosMaquina.txt','a', encoding='utf-8') as arquivo:# WITH OPEN COM A = VOCE JA SABE | UTF = VOCE JA SABE TAMBEM
         arquivo.write("\n━━━━━ CPU ━━━━━\n\nUso total: {}\nFrequência da CPU: {}Mhz\nQuantidade de núcleos: {}\nQuantidade de Threads: {}\nUso por core: {}\n".format(usoCpuPorc, freqCpu, qtdCores, qtdThreads, usoPorCore))
     
 
@@ -231,7 +241,7 @@ def relatorio():
     porcentagemOcupados = [] 
     for j in particoes:
         porcentagemOcupados.append(disk_usage(j).percent) 
-    with open('DadosMaquina.txt','a', encoding='utf-8') as arquivo:
+    with open('DadosMaquina.txt','a', encoding='utf-8') as arquivo:# WITH OPEN COM A = VOCE JA SABE | UTF = VOCE JA SABE TAMBEM
         arquivo.write("\n━━━━━ Disco ━━━━━\n\nPartições: {} \nPorcentagem ocupada de cada partição: {}\n".format(particoes, porcentagemOcupados))
 
 
