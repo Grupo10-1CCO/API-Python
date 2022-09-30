@@ -18,9 +18,10 @@ def insert(query):
         print("ERRO {}".format(error))
     finally: # Após a execução dos comandos acima, o finally fecha as conexões
         if cnx.is_connected():
+            linhas = cursor.rowcount
             cursor.close()
             cnx.close()
-            return cursor.rowcount
+            return linhas
 
 def select(query, isAllRequested = False):
     try:

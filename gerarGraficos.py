@@ -54,7 +54,7 @@ def gerarGraficoCpu(userId):
     for linha in select(query,True):
         usoCpuPorc.append(linha[0])
         freqCpu.append(linha[1])
-        data_format = linha[2].strftime('%d/%m \n %H:%M:%S')
+        data_format = linha[2].strftime("%d/%m \n %H:%M:%S")
         dataHoraRegis.append(data_format)
     
     dataHoraFormatado = dataHoraRegis[::-1]
@@ -78,7 +78,7 @@ def gerarGraficoCpu2(userId):
     for linha in select(query,True):
         usoCpuPorc.append(linha[0])
         freqCpu.append(linha[1])
-        data_format = linha[2].strftime('%d/%m \n %H:%M:%S')
+        data_format = linha[2].strftime("%d/%m \n %H:%M:%S")
         dataHoraRegis.append(data_format)
 
     dataHoraFormatado = dataHoraRegis[::-1]
@@ -101,7 +101,7 @@ def gerarGraficoMemoria(userId):
 
     for linha in select(query,True):
         usoMemoria.append(linha[0])
-        data_format = linha[1].strftime('%d/%m \n %H:%M:%S')
+        data_format = linha[1].strftime("%d/%m \n %H:%M:%S")
         dataHoraRegis.append(data_format)
 
     dataHoraFormatado = dataHoraRegis[::-1]

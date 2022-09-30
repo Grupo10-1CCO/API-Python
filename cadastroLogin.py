@@ -31,7 +31,7 @@ def login():
         nomeUser = dados[1]
         serialNumber = dados[2]
         time.sleep(2)
-        return userId, nomeUser, serialNumber
+        return dados
 
 
 
