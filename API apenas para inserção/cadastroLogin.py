@@ -51,7 +51,7 @@ def cadastro():
         
         time.sleep(5)
         if retorno == None:
-            query = f"INSERT INTO Usuario VALUES (NULL, '{nome}', '{email}', MD5('{senha}'), 1);"
+            query = f"INSERT INTO Usuario VALUES (NULL, '{nome}', '{email}', MD5('{senha}'), 'Responsável', 1);"
             resultadoInsert = insert(query)
             os.system(codeCleaner)
             print(resultadoInsert)
