@@ -175,14 +175,14 @@ def insertPeriodico(idMaquina):
             usoDisco = porcentagemOcupados[0]
 
             dataHora = datetime.datetime.now()
-            marcaCpu = cpuinfo.get_cpu_info()['brand_raw']
+            marcaCpu = 'CPU ' + cpuinfo.get_cpu_info()['brand_raw']
             query = f"INSERT INTO Dados VALUES(NULL, {usoCpuPorc}, '{dataHora}', (select idComponente from componente where nomeComponente = '{marcaCpu}' and fkMaquina = {idMaquina[0]})), (NULL, {usoAtualMemoria}, '{dataHora}', (select idComponente from componente where nomeComponente = 'RAM' and fkMaquina = {idMaquina[0]})), (NULL, {usoDisco}, '{dataHora}', (select idComponente from componente where nomeComponente = 'Disco {particoes[0]}\\' and fkMaquina = {idMaquina[0]}));"
             
 
             insert(query)
             print(query)
 
-            time.sleep(10)
+            time.sleep(4)
 
 
 # CAPTURA TODOS OS DADOS NOVAMENTE E GERA UM TXT COM OS DADOS

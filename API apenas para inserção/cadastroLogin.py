@@ -109,7 +109,7 @@ def cadastroComponentes(idEmpresa):
     freqMinCpu = f'{cpu_freq().min, 2}Mhz'
     qtdCores = cpu_count()
     qtdThreads = cpu_count(logical=False)
-    processador = cpuinfo.get_cpu_info()['brand_raw']
+    processador = 'CPU ' + cpuinfo.get_cpu_info()['brand_raw']
     discoPrincipal = particoes[0]
     capacidadeDiscoPrincipal = porcentagemOcupados[0]
     memoriaTotal = f'{conversao_bytes(virtual_memory().total, 3)}GB'
