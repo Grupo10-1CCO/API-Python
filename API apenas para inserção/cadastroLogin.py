@@ -6,6 +6,7 @@ from functions import codeCleaner, conversao_bytes, insertPeriodico, randomSeria
 import cpuinfo
 from psutil import *
 import platform
+from getmac import get_mac_address as gma
 
 
 def login():
@@ -13,6 +14,7 @@ def login():
     print('\033[1mLogin\033[0m \n\n')
     email = input("E-mail: ")
     senha = getpass.getpass("Senha: ")
+    serialMaquina = input("Serial do servidor: ")
 
     query = f"select * from usuario where email = '{email}' and senha = md5('{senha}');"
     
@@ -27,65 +29,61 @@ def login():
         os.system(codeCleaner)
         print("\033[1mSucesso no Login\033[0m\n\nLogin feito com sucesso\nAbrindo menu inicial...\n")
         
-        # ALGUEM CORRIGI ISSO AQ QUANDO TIVER TEMPO
-        idMaquina = select(f"select idMaquina from maquina where fkEmpresa = 1")
+        
+        
+        idMaquina = select(f"select idMaquina from maquina where serialMaquina = '{serialMaquina}';")
         time.sleep(2)
-        insertPeriodico(idMaquina)
-        return dados
-
-
+        if idMaquina != None:
+            
+            insertPeriodico(idMaquina[0])
+            return dados
+        else:
+            print('\033[1mFalha em Inserir os dados\033[0m\n\Serial inválido')
+            time.sleep(3)
+            login()
 
 def cadastro():
     os.system(codeCleaner)
     print('\033[1mCadastro\033[0m \n\n')
-    nome = input("Nome: ")
+    
     email = input("E-mail: ")
     senha = getpass.getpass("Senha: ")
-    confSenha = getpass.getpass("Confirme a senha: ")
+    
+    
 
-    if senha == confSenha:
-        verifExistente = f"SELECT * FROM usuario where email = '{email}'"
+    
+    verifExistente = f"SELECT * FROM usuario where email = '{email}' and senha  = md5('{senha}')"
         
         
 
-        retorno = select(verifExistente)
+    retorno = select(verifExistente)
         
         # time.sleep(5)
-        if retorno == None:
-            query = f"INSERT INTO Usuario VALUES (NULL, '{nome}', '{email}', MD5('{senha}'), 'Responsável', 1);"
-            resultadoInsert = insert(query)
+    if retorno != None:
+        
+        
+        # time.sleep(3)
+        
+            
             os.system(codeCleaner)
-            print(resultadoInsert)
-            # time.sleep(3)
-            if resultadoInsert == 1:
-                print('\033[1mCadastro\033[0m\n\nCadastro realizado com sucesso!')
-                time.sleep(2)
-                os.system(codeCleaner)
-                print("Para prosseguir é necessário que recolhamos algumas informações sobre sua máquina... \n\n Aguarde alguns instantes enquanto esse processo é realizado.\n\n")
-                queryId = f"SELECT idEmpresa FROM Empresa where idEmpresa = (select fkEmpresa from Usuario where email ='{email}' and senha = MD5('{senha}'));"
-                dados = select(queryId)
-                idEmpresa = dados[0]
+            print("Para prosseguir é necessário que recolhamos algumas informações sobre sua máquina... \n\n Aguarde alguns instantes enquanto esse processo é realizado.\n\n")
+            queryId = f"SELECT idEmpresa FROM Empresa where idEmpresa = (select fkEmpresa from Usuario where email ='{email}' and senha = MD5('{senha}'));"
+            dados = select(queryId)
+            idEmpresa = dados[0]
                 
-                dados = cadastroComponentes(idEmpresa)
-                if dados:
+            dados = cadastroComponentes(idEmpresa)
+            if dados:
                     
-                    return 0
-                else:
-                    print('Ocorreu um erro')
-                    time.sleep(3)
-                    cadastro()
+                return 0
+            else:
+                print('Ocorreu um erro')
+                time.sleep(3)
+                cadastro()
 
 
-        else:
-            print('Username já é utilizado!')
-            time.sleep(2)
-            cadastro()
+       
 
-    else:
-        print("As senhas não coincidem.")
-        time.sleep(1)
-        cadastro()
-
+   
 
 
 def cadastroComponentes(idEmpresa):
@@ -114,6 +112,7 @@ def cadastroComponentes(idEmpresa):
     discoPrincipal = particoes[0]
     capacidadeDiscoPrincipal = porcentagemOcupados[0]
     memoriaTotal = f'{conversao_bytes(virtual_memory().total, 3)}GB'
+    nomeServidor = input("Digite o apelido do servidor: ")
 
     arquitetura = cpuinfo.get_cpu_info()['arch']
     if arquitetura == "X86_32":
@@ -127,7 +126,7 @@ def cadastroComponentes(idEmpresa):
 
   
     #query = f"INSERT INTO maquina VALUES ('{serial}', {idUsuario}, '{sistema}', '{processador}', {qtdCores}, {qtdThreads}, '{freqCpu}', '{freqMinCpu}', '{memoriaTotal}', '{discoPrincipal}\\', '{capacidadeDiscoPrincipal}')"
-    query = f"insert into maquina values(NULL, '{serial}','Meu pc', {idEmpresa})"
+    query = f"insert into maquina values(NULL, '{serial}','{nomeServidor}', {idEmpresa})"
     retorno = insert(query)
     
     idMaquina = select(f"select idMaquina from maquina where serialMaquina = '{serial}'")
@@ -142,10 +141,10 @@ def cadastroComponentes(idEmpresa):
         # print("Tamanho Disco " + str(capacidadeDiscoPrincipal))
         # time.sleep(18)
         query3 = f"insert into componente values (NULL, '{processador}', NULL, {idMaquina[0]}, NULL, 1), (NULL, 'RAM', {conversao_bytes(virtual_memory().total, 3)}, {idMaquina[0]},  NULL, 1),(NULL, 'Disco {discoPrincipal}\\', {capacidadeDiscoPrincipal}, {idMaquina[0]}, NULL, 1)" 
-        # print(query3)
-        # time.sleep(10)
+        
+        time.sleep(3)
     elif sistema == "Linux":
-        query3 = f"insert into componente values (NULL, '{processador}', {idMaquina[0]}, NULL, 1), (NULL, 'RAM', {idMaquina[0]}, NULL, 1),(NULL, 'Disco {discoPrincipal}', {idMaquina[0]}, NULL, 1)" 
+        query3 = f"insert into componente values (NULL, '{processador}', NULL, {idMaquina[0]}, NULL, 1), (NULL, 'RAM', {idMaquina[0]}, NULL, 1),(NULL, 'Disco {discoPrincipal}', {idMaquina[0]}, NULL, 1)" 
 
 
     time.sleep(2)
@@ -154,20 +153,15 @@ def cadastroComponentes(idEmpresa):
     #retorno2 = insert(query2)
     retorno3 = insert(query3)
 
-    print(f"{retorno} 1")
-    #print(f"{retorno2} 2")
-    print(f"{retorno3} 3")
-    
     
 
     if (retorno > 0) and (retorno3 >0):
         print("Cadastro dos componentes realizado com sucesso, seu cadastro está completo.")
         time.sleep(2)
+        print(f"O serial do servidor é '{serial}'. Este número será utilizado para realizar o monitoramento")
+        time.sleep(10)
         return True
-    else:
-        print(f"{retorno} 4")
-        #print(f"{retorno2} 5")
-        print(f"{retorno3} 6")
+    else:    
         print("erro")
         time.sleep(2)
         return False

@@ -8,6 +8,7 @@ from database import select # Importando a função select para fazer select do 
 from functions import conversao_bytes #Importando a função coversao_bytes para converter bytes para outras medidas
 from functions import codeCleaner # Importando a função codeCleaner para limpar o terminal
 
+
 # Indentificando o sitema operacional e direcionando o dirtório padrão 
 # (se for Linux: /)
 # (se for Windows: C:\\ )

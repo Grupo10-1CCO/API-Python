@@ -191,13 +191,11 @@ def insertPeriodico(idMaquina):
 
             dataHora = datetime.datetime.now()
             marcaCpu = 'CPU ' + cpuinfo.get_cpu_info()['brand_raw']
-            print(idMaquina[0])
-            time.sleep(5)
-            query = f"INSERT INTO Dados VALUES(NULL, {usoCpuPorc}, '{dataHora}', (select idComponente from componente where nomeComponente = '{marcaCpu}' and fkMaquina = {idMaquina[0]})), (NULL, {usoAtualMemoria}, '{dataHora}', (select idComponente from componente where nomeComponente = 'RAM' and fkMaquina = {idMaquina[0]})), (NULL, {usoDisco}, '{dataHora}', (select idComponente from componente where nomeComponente = 'Disco {particoes[0]}\\' and fkMaquina = {idMaquina[0]}));"
+            query = f"INSERT INTO Dados VALUES(NULL, {usoCpuPorc}, '{dataHora}', (select idComponente from componente where nomeComponente = '{marcaCpu}' and fkMaquina = {idMaquina})), (NULL, {usoAtualMemoria}, '{dataHora}', (select idComponente from componente where nomeComponente = 'RAM' and fkMaquina = {idMaquina})), (NULL, {usoDisco}, '{dataHora}', (select idComponente from componente where nomeComponente = 'Disco {particoes[0]}\\' and fkMaquina = {idMaquina}));"
             
 
             insert(query)
-            print(query)
+            
 
             time.sleep(4)
 

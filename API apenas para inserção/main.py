@@ -12,6 +12,7 @@ from dash import dashboard # Importando as funções do arquvio dash para execut
 from functions import insertPeriodico # Importando a função do arquivo functions que faz insert dos dados de captura no banco
 import threading #Biblioteca para pegar o serial number da maquina
 from gerarGraficos import gerarGraficoCpu, gerarGraficoDisco, gerarGraficoCpu2, gerarGraficoMemoria 
+
 # Importando as funções do arquivo gerarGraficos que utliza matplotlib.pyplotv para plotar gráficos
 
 #Função que executa o menu no terminal
@@ -110,8 +111,7 @@ def main():
         
         #INSERT PERIODICO APENAS PARA A INSERÇAO NO BANCO
         
-        print(userId, nomeUser, idMaquina)
-        menu(userId, nomeUser, idMaquina)
+        
 
     # Opção de cadastro
     elif opcao1tela == "2":

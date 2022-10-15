@@ -4,8 +4,8 @@ import time
 # cnx = conexão com o banco
 # cursor = manipulação do banco 
 
-cnx = mysql.connector.connect(user="Leonardo Aguiar",
-                              password="P00senha", 
+cnx = mysql.connector.connect(user="root",
+                              password="pjTw&XK^tmkA", 
                               host="localhost", 
                               database="SAMP", 
                               autocommit=True)
@@ -29,7 +29,6 @@ def insert(query):
 
 def select(query, isAllRequested = False):
     try:
-        print(query)
         
         cnx.reconnect()
         cursor = cnx.cursor()
@@ -48,7 +47,7 @@ def select(query, isAllRequested = False):
         if cnx.is_connected():
             cursor.close()
             cnx.close()
-            print(dados)
+            
             time.sleep(2)
             return dados
 
