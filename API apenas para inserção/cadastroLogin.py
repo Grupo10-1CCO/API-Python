@@ -27,6 +27,7 @@ def login():
         os.system(codeCleaner)
         print("\033[1mSucesso no Login\033[0m\n\nLogin feito com sucesso\nAbrindo menu inicial...\n")
         
+        # ALGUEM CORRIGI ISSO AQ QUANDO TIVER TEMPO
         idMaquina = select(f"select idMaquina from maquina where fkEmpresa = 1")
         time.sleep(2)
         insertPeriodico(idMaquina)
@@ -134,7 +135,15 @@ def cadastroComponentes(idEmpresa):
     #query2 = f"insert into medida values(NULL, '%'), (NULL, 'Ghz'), (NULL, 'Gb')"
                  
     if sistema == "Windows":
-        query3 = f"insert into componente values (NULL, '{processador}', {idMaquina[0]}, NULL, 1), (NULL, 'RAM', {idMaquina[0]}, NULL, 1),(NULL, 'Disco {discoPrincipal}\\', {idMaquina[0]}, NULL, 1)" 
+        print("Processador: " + processador)
+        print("ID máquina: " + str(idMaquina[0]))
+        print("Memoria RAM " +conversao_bytes(virtual_memory().total, 3))
+        print("Disco Principal " +discoPrincipal)
+        print("Tamanho Disco " + str(capacidadeDiscoPrincipal))
+        time.sleep(18)
+        query3 = f"insert into componente values (NULL, '{processador}', NULL, {idMaquina[0]}, NULL, 1), (NULL, 'RAM', {conversao_bytes(virtual_memory().total, 3)}, {idMaquina[0]},  NULL, 1),(NULL, 'Disco {discoPrincipal}\\', {capacidadeDiscoPrincipal}, {idMaquina[0]}, NULL, 1)" 
+        print(query3)
+        time.sleep(10)
     elif sistema == "Linux":
         query3 = f"insert into componente values (NULL, '{processador}', {idMaquina[0]}, NULL, 1), (NULL, 'RAM', {idMaquina[0]}, NULL, 1),(NULL, 'Disco {discoPrincipal}', {idMaquina[0]}, NULL, 1)" 
 

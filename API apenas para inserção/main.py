@@ -103,6 +103,8 @@ def main():
     # Opção de login
     if opcao1tela == "1":
         dados = login()
+        print(dados)
+        time.sleep(10)
         userId = dados[0]
         nomeUser = dados[1]
         
