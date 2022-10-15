@@ -50,13 +50,13 @@ def cadastro():
 
         retorno = select(verifExistente)
         
-        time.sleep(5)
+        # time.sleep(5)
         if retorno == None:
             query = f"INSERT INTO Usuario VALUES (NULL, '{nome}', '{email}', MD5('{senha}'), 'Responsável', 1);"
             resultadoInsert = insert(query)
             os.system(codeCleaner)
             print(resultadoInsert)
-            time.sleep(3)
+            # time.sleep(3)
             if resultadoInsert == 1:
                 print('\033[1mCadastro\033[0m\n\nCadastro realizado com sucesso!')
                 time.sleep(2)
@@ -135,15 +135,15 @@ def cadastroComponentes(idEmpresa):
     #query2 = f"insert into medida values(NULL, '%'), (NULL, 'Ghz'), (NULL, 'Gb')"
                  
     if sistema == "Windows":
-        print("Processador: " + processador)
-        print("ID máquina: " + str(idMaquina[0]))
-        print("Memoria RAM " +conversao_bytes(virtual_memory().total, 3))
-        print("Disco Principal " +discoPrincipal)
-        print("Tamanho Disco " + str(capacidadeDiscoPrincipal))
-        time.sleep(18)
+        # print("Processador: " + processador)
+        # print("ID máquina: " + str(idMaquina[0]))
+        # print("Memoria RAM " +conversao_bytes(virtual_memory().total, 3))
+        # print("Disco Principal " +discoPrincipal)
+        # print("Tamanho Disco " + str(capacidadeDiscoPrincipal))
+        # time.sleep(18)
         query3 = f"insert into componente values (NULL, '{processador}', NULL, {idMaquina[0]}, NULL, 1), (NULL, 'RAM', {conversao_bytes(virtual_memory().total, 3)}, {idMaquina[0]},  NULL, 1),(NULL, 'Disco {discoPrincipal}\\', {capacidadeDiscoPrincipal}, {idMaquina[0]}, NULL, 1)" 
-        print(query3)
-        time.sleep(10)
+        # print(query3)
+        # time.sleep(10)
     elif sistema == "Linux":
         query3 = f"insert into componente values (NULL, '{processador}', {idMaquina[0]}, NULL, 1), (NULL, 'RAM', {idMaquina[0]}, NULL, 1),(NULL, 'Disco {discoPrincipal}', {idMaquina[0]}, NULL, 1)" 
 

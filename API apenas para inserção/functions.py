@@ -7,6 +7,8 @@ from database import insert, select
 import cpuinfo
 from uuid import getnode as get_mac #Biblioteca para captirar o endereço mac da maquina
 from random import randint #Gerando um número serial aleatorio
+from http import server
+from slack_sdk import WebClient
 
 # Coletando qual o sistema operacional
 sistema = platform.system()
@@ -154,6 +156,19 @@ def insertPeriodico(idMaquina):
             usoAtualMemoria = virtual_memory().percent
             usoCpuPorc = cpu_percent()
             freqCpu = round(cpu_freq().current,0)
+
+            if usoAtualMemoria > 80:
+                client = WebClient('xoxb-4249231777856-4222605250757-vF1PjiBsrzxVo2rtfjGY4CDi')
+                response = client.chat_postMessage(channel = 'C046JHG2RPF', text = 'ALERTA! Uso da memória RAM acima de 80%!')
+            if usoCpuPorc > 80:
+                client = WebClient('xoxb-4249231777856-4222605250757-vF1PjiBsrzxVo2rtfjGY4CDi')
+                response = client.chat_postMessage(channel = 'C046JHG2RPF', text = 'ALERTA! Uso da CPU acima de 80%!')
+            if usoAtualMemoria < 5:
+                client = WebClient('xoxb-4249231777856-4222605250757-vF1PjiBsrzxVo2rtfjGY4CDi')
+                response = client.chat_postMessage(channel = 'C046JHG2RPF', text = 'ALERTA! Uso da memória RAM abaixo de 5%!')
+            if usoCpuPorc < 5:
+                client = WebClient('xoxb-4249231777856-4222605250757-vF1PjiBsrzxVo2rtfjGY4CDi')
+                response = client.chat_postMessage(channel = 'C046JHG2RPF', text = 'ALERTA! Uso da CPU abaixo de 5%!')
 
             particoes = []
             if sistema == "Windows":
