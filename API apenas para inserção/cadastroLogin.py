@@ -102,7 +102,7 @@ def cadastroComponentes(idEmpresa):
 
     porcentagemOcupados = []
     for j in particoes:
-        porcentagemOcupados.append(disk_usage(j).percent)
+        porcentagemOcupados.append(round(disk_usage(j).total / 1024 / 1024 / 1024, 1))
 
     freqCpu = f'{round(cpu_freq().max, 2)}Mhz'
     freqMinCpu = f'{cpu_freq().min, 2}Mhz'
