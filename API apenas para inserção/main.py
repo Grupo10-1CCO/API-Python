@@ -99,7 +99,7 @@ def menu(userId, nome, idMaquina):
 def main():
     os.system(codeCleaner)
 
-    opcao1tela = input("\033[1mHardware Monitor - BEM VINDO \033[0m\n\n[1] - Entrar \n[2] - Cadastar \n[3] - Sair\n\n\033[1mUsuário:\033[0m ")
+    opcao1tela = input("\033[1mHardware Monitor - BEM VINDO \033[0m\n\n[1] - Entrar \n[2] - Cadastar máquina \n[3] - Sair\n\n\033[1mUsuário:\033[0m ")
 
     # Opção de login
     if opcao1tela == "1":

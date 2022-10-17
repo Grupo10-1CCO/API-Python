@@ -4,8 +4,8 @@ import time
 # cnx = conexão com o banco
 # cursor = manipulação do banco 
 
-cnx = mysql.connector.connect(user="user_atividePI",
-                              password="sptech", 
+cnx = mysql.connector.connect(user="root",
+                              password="pjTw&XK^tmkA", 
                               host="localhost", 
                               database="SAMP", 
                               autocommit=True)

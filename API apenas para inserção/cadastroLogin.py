@@ -6,7 +6,7 @@ from functions import codeCleaner, conversao_bytes, insertPeriodico, randomSeria
 import cpuinfo
 from psutil import *
 import platform
-from getmac import get_mac_address as gma
+
 
 
 def login():
@@ -27,7 +27,7 @@ def login():
 
     else: 
         os.system(codeCleaner)
-        print("\033[1mSucesso no Login\033[0m\n\nLogin feito com sucesso\nAbrindo menu inicial...\n")
+        print("\033[1mSucesso no Login\033[0m\n\nEssa máquina está sendo monitorada\nAperte Ctrl + C para interromper\n")
         
         
         
@@ -44,7 +44,7 @@ def login():
 
 def cadastro():
     os.system(codeCleaner)
-    print('\033[1mCadastro\033[0m \n\n')
+    print('\033[1mCadastro da Máquina\033[0m \n\n')
     
     email = input("E-mail: ")
     senha = getpass.getpass("Senha: ")
@@ -79,7 +79,9 @@ def cadastro():
                 print('Ocorreu um erro')
                 time.sleep(3)
                 cadastro()
-
+    else: 
+        print('Falha ao cadastrar a máquina\n E-mail ou senha inválidos' )
+        time.sleep(3)
 
        
 
