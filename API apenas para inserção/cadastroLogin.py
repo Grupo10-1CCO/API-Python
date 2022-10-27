@@ -35,7 +35,7 @@ def login():
         time.sleep(2)
         if idMaquina != None:
             
-            insertPeriodico(idMaquina[0])
+            insertPeriodico(idMaquina[0], serialMaquina)
             return dados
         else:
             print('\033[1mFalha em Inserir os dados\033[0m\n\Serial inválido')
