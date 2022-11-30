@@ -6,6 +6,7 @@ from functions import codeCleaner, conversao_bytes, insertPeriodico, randomSeria
 import cpuinfo
 from psutil import *
 import platform
+import datetime
 
 
 
@@ -16,7 +17,7 @@ def login():
     senha = getpass.getpass("Senha: ")
     serialMaquina = input("Serial do servidor: ")
 
-    query = f"select * from usuario where email = '{email}' and senha = md5('{senha}');"
+    query = f"select * from Usuario where email = '{email}' and senha = HashBytes('MD5', '{senha}');"
     
     dados = select(query)
 
@@ -31,7 +32,7 @@ def login():
         
         
         
-        idMaquina = select(f"select idMaquina from maquina where serialMaquina = '{serialMaquina}';")
+        idMaquina = select(f"select idMaquina from Maquina where serialMaquina = '{serialMaquina}';")
         time.sleep(2)
         if idMaquina != None:
             
@@ -52,7 +53,7 @@ def cadastro():
     
 
     
-    verifExistente = f"SELECT * FROM usuario where email = '{email}' and senha  = md5('{senha}')"
+    verifExistente = f"SELECT * FROM Usuario where email = '{email}' and senha  = HashBytes('MD5', '{senha}')"
         
         
 
@@ -67,7 +68,7 @@ def cadastro():
             
             os.system(codeCleaner)
             print("Para prosseguir é necessário que recolhamos algumas informações sobre sua máquina... \n\n Aguarde alguns instantes enquanto esse processo é realizado.\n\n")
-            queryId = f"SELECT idEmpresa FROM Empresa where idEmpresa = (select fkEmpresa from Usuario where email ='{email}' and senha = MD5('{senha}'));"
+            queryId = f"SELECT idEmpresa FROM Empresa where idEmpresa = (select fkEmpresa from Usuario where email ='{email}' and senha = HashBytes('MD5', '{senha}'));"
             dados = select(queryId)
             idEmpresa = dados[0]
                 
@@ -128,10 +129,10 @@ def cadastroComponentes(idEmpresa):
 
   
     #query = f"INSERT INTO maquina VALUES ('{serial}', {idUsuario}, '{sistema}', '{processador}', {qtdCores}, {qtdThreads}, '{freqCpu}', '{freqMinCpu}', '{memoriaTotal}', '{discoPrincipal}\\', '{capacidadeDiscoPrincipal}')"
-    query = f"insert into maquina values(NULL, '{serial}','{nomeServidor}', {idEmpresa})"
+    query = f"insert into Maquina (serialMaquina, nome, fkEmpresa) values('{serial}','{nomeServidor}', {idEmpresa[0]})"
     retorno = insert(query)
     
-    idMaquina = select(f"select idMaquina from maquina where serialMaquina = '{serial}'")
+    idMaquina = select(f"select idMaquina from Maquina where serialMaquina = '{serial}'")
     #query4 = f"insert into metrica values(NULL, {freqMinCpu}, {freqCpu}),(NULL, 0, {memoriaTotal}), (NULL, 0, {capacidadeDiscoPrincipal})"
     #query2 = f"insert into medida values(NULL, '%'), (NULL, 'Ghz'), (NULL, 'Gb')"
                  
@@ -142,11 +143,11 @@ def cadastroComponentes(idEmpresa):
         # print("Disco Principal " +discoPrincipal)
         # print("Tamanho Disco " + str(capacidadeDiscoPrincipal))
         # time.sleep(18)
-        query3 = f"insert into componente values (NULL, '{processador}', NULL, {idMaquina[0]}, NULL, 1), (NULL, 'RAM', {conversao_bytes(virtual_memory().total, 3)}, {idMaquina[0]},  NULL, 1),(NULL, 'Disco {discoPrincipal}\\', {capacidadeDiscoPrincipal}, {idMaquina[0]}, NULL, 1)" 
+        query3 = f"insert into Componente (nomeComponente, tamanho, fkMaquina, fkMedida, fkMetrica) values ('{processador}', NULL, {idMaquina[0][0]}, 1, NULL), ('RAM', {conversao_bytes(virtual_memory().total, 3)}, {idMaquina[0][0]},  1, NULL), ('Disco {discoPrincipal}\\', {capacidadeDiscoPrincipal}, {idMaquina[0][0]}, 1, NULL)" 
         
         time.sleep(3)
     elif sistema == "Linux":
-        query3 = f"insert into componente values (NULL, '{processador}', NULL, {idMaquina[0]}, NULL, 1), (NULL, 'RAM', {idMaquina[0]}, NULL, 1),(NULL, 'Disco {discoPrincipal}', {idMaquina[0]}, NULL, 1)" 
+        query3 = f"insert into Componente values ('{processador}', NULL, {idMaquina[0][0]}, 1, NULL), (NULL, 'RAM', {idMaquina[0][0]}, 1, NULL),('Disco {discoPrincipal}', {idMaquina[0][0]}, 1, NULL)" 
 
 
     time.sleep(2)
