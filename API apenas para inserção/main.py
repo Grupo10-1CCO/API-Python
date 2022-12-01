@@ -2,7 +2,6 @@
 # rodar a api, O QUE COMEÇAR COM IMPORT = Biblioteca, O QUE COMEÇAR COM FROM é de arquivo da própria API
 
 from database import select
-from functions import monitorar, info, relatorio # Importando funções de monitoramento do arquivo Functions, para mais detalhes abra o arquvio original 
 from psutil import * # Biblioteca que captura dados de componentes da maquina
 import time # Biblioteca que utilizamos para parar o programa por X segundos
 import os # Biblioteca que permite a utilização de comandos do SO em um terminal 'próprio', ela executa os comandos de forma própria
