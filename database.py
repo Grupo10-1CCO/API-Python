@@ -1,43 +1,50 @@
 import mysql.connector
+import pyodbc
+import time
 
 # cnx = conexão com o banco
 # cursor = manipulação do banco 
 
-cnx = mysql.connector.connect(user="sampUser",
-                              password="samp", 
-                              host="localhost", 
-                              database="dadosMaquina", 
-                              autocommit=True)
+# cnx = mysql.connector.connect(user="root",
+#                               password="pjTw&XK^tmkA", 
+#                               host="localhost", 
+#                               database="SAMP", 
+#                               autocommit=True)
 
-def insert(query): 
-    try: # o comando try serve para verificar se toos os comandos serão executados de maneira exata, caso o contrário, ele para no momento em que detectou um erro, indo para o except que informa o erro.
-        cnx.reconnect()
-        cursor = cnx.cursor()
-        cursor.execute(query)
-    except mysql.connector.connector.Error as error:
-        print("ERRO {}".format(error))
-    finally: # Após a execução dos comandos acima, o finally fecha as conexões
-        if cnx.is_connected():
-            linhas = cursor.rowcount
-            cursor.close()
-            cnx.close()
-            return linhas
+server = 'tcp:projetosamp.database.windows.net' 
+database = 'SAMP' 
+username = 'adminsamp' 
+password = 'Projetosamp3'
 
-def select(query, isAllRequested = False):
+cnx = pyodbc.connect('DRIVER={ODBC Driver 18 for SQL Server};SERVER='+server+';DATABASE='+database+';ENCRYPT=yes;UID='+username+';PWD='+ password)
+cnx.autocommit = True
+
+def insert(query):
+    linhas = None
     try:
-        cnx.reconnect()
+        print(query)
+        cursor = cnx.cursor()
+        linhas = cursor.execute(query).rowcount
+        cnx.commit()
+        print(linhas)
+    except mysql.connector.Error as error:
+        print("ERRO {}".format(error))
+    finally:
+         return linhas
+
+
+
+
+def select(query):
+    dados = None
+    try:
+        print(query)
         cursor = cnx.cursor()
         cursor.execute(query)
-        if isAllRequested: # verificando se retornou do banco
-            dados = cursor.fetchall() # retornando os dados do banco
-        else:
-            dados = cursor.fetchone()
+        dados = cursor.fetchall() # retornando os dados do banco
     except mysql.connector.Error as error:
-        print('Erro')
+        print(f"Erro: {error}")
         dados = error
     finally:
-        if cnx.is_connected():
-            cursor.close()
-            cnx.close()
-            return dados
+        return dados
 

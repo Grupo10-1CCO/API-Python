@@ -1,7 +1,7 @@
 # Linha 3 a linha 12 = Importações de bibliotecas e funções de outros arquvios da API que são responsáveis por
 # rodar a api, O QUE COMEÇAR COM IMPORT = Biblioteca, O QUE COMEÇAR COM FROM é de arquivo da própria API
 
-from functions import conversao_bytes, monitorar, info, relatorio # Importando funções de monitoramento do arquivo Functions, para mais detalhes abra o arquvio original 
+from database import select
 from psutil import * # Biblioteca que captura dados de componentes da maquina
 import time # Biblioteca que utilizamos para parar o programa por X segundos
 import os # Biblioteca que permite a utilização de comandos do SO em um terminal 'próprio', ela executa os comandos de forma própria
@@ -11,11 +11,12 @@ from dash import dashboard # Importando as funções do arquvio dash para execut
 from functions import insertPeriodico # Importando a função do arquivo functions que faz insert dos dados de captura no banco
 import threading #Biblioteca para pegar o serial number da maquina
 from gerarGraficos import gerarGraficoCpu, gerarGraficoDisco, gerarGraficoCpu2, gerarGraficoMemoria 
+
 # Importando as funções do arquivo gerarGraficos que utliza matplotlib.pyplotv para plotar gráficos
 
 #Função que executa o menu no terminal
-def menu(userId, nome, serialNumber):
-    threading.Thread(target=insertPeriodico, kwargs={'serialNumber':serialNumber} ).start() # pesquisar sobre esta função
+def menu(userId, nome, idMaquina):
+    threading.Thread(target=insertPeriodico, kwargs={'idMaquina':idMaquina} ).start() # pesquisar sobre esta função
 
     os.system(codeCleaner)
 
@@ -52,23 +53,28 @@ def menu(userId, nome, serialNumber):
             res_cpu = input("\033[1mCPU\033[0m \n\n[1] - Porcentagem de uso \n[2] - Frequência \n[3] - Sair\n\n\033[1mUsuário:\033[0m ")
             if res_cpu == "1":
                 os.system(codeCleaner)
-                print("Atenção! Preparando seus dados para análise...")
-                time.sleep(2)
-
-                gerarGraficoCpu(userId)
-
-            if res_cpu == "2":
                 os.system(codeCleaner)
                 print("Atenção! Preparando seus dados para análise...")
                 time.sleep(2)
 
-                gerarGraficoCpu2(userId)
+                gerarGraficoCpu(idMaquina)
+
+            if res_cpu == "2":
+                os.system(codeCleaner)
+                
+                os.system(codeCleaner)
+                print("Atenção! Preparando seus dados para análise...")
+                time.sleep(2)
+
+                gerarGraficoCpu2(idMaquina)
 
         if res == "2":
             os.system(codeCleaner)
+            
+            os.system(codeCleaner)
             print("Atenção! Preparando seus dados para análise...")
             time.sleep(2)
-            gerarGraficoMemoria(userId)
+            gerarGraficoMemoria(idMaquina)
 
         if res == "3":
             os.system(codeCleaner)
@@ -86,21 +92,25 @@ def menu(userId, nome, serialNumber):
         main()
         exit()
     while opcaoUser != 1 and opcaoUser != 2 and opcaoUser != 3 and opcaoUser != 4:
-        menu(userId, nome, serialNumber)
+        menu(userId, nome, idMaquina)
 
 # Função para exibir o menu de opções de login e cadastro
 def main():
     os.system(codeCleaner)
 
-    opcao1tela = input("\033[1mHardware Monitor - BEM VINDO \033[0m\n\n[1] - Entrar \n[2] - Cadastar \n[3] - Sair\n\n\033[1mUsuário:\033[0m ")
+    opcao1tela = input("\033[1mHardware Monitor - BEM VINDO \033[0m\n\n[1] - Entrar \n[2] - Cadastar máquina \n[3] - Sair\n\n\033[1mUsuário:\033[0m ")
 
     # Opção de login
     if opcao1tela == "1":
         dados = login()
+        print(dados)
+        time.sleep(10)
         userId = dados[0]
         nomeUser = dados[1]
-        serialNumber = dados[2]
-        menu(userId, nomeUser, serialNumber)
+        
+        #INSERT PERIODICO APENAS PARA A INSERÇAO NO BANCO
+        
+        
 
     # Opção de cadastro
     elif opcao1tela == "2":
