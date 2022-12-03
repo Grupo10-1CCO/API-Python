@@ -29,15 +29,15 @@ chamados = 0
 
 chamados = 0
 
-def abrirChamado(componente, serial, valorAtual, metrica):
+def abrirChamado(tokenPipefy, componente, serial, valorAtual, metrica):
     url = "https://api.pipefy.com/graphql"
 
-    query = {"query": "{allCards(pipeId: 302763672) {edges {node {id title age}}}}"}
+    query = {"query": "{allCards(pipeId: 302763672) {edges {node {id title age done}}}}"}
 
     headers = {
         "accept": "application/json",
         "content-type": "application/json",
-        "authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJ1c2VyIjp7ImlkIjozMDIwODY5MjUsImVtYWlsIjoiam9hby5jb25jZWljYW9Ac3B0ZWNoLnNjaG9vbCIsImFwcGxpY2F0aW9uIjozMDAyMDc0NzZ9fQ.SRZx-58-x8HKCSTanwLU7MzGVoenpQwrmFpDppWzJduSo8NDJKtAw65ECGCGWEOO_1SJ65LnacQmgQ0aEIunXA"
+        "authorization": f"{tokenPipefy}"
     }
 
     response = requests.post(url, json=query, headers=headers)
@@ -56,7 +56,8 @@ def abrirChamado(componente, serial, valorAtual, metrica):
     while i < len(dados):
         age = dados[i]['node']['age']
         titulo = dados[i]['node']['title']
-        if age <86400 and titulo == problema:
+        feito = dados[i]['node']['done']
+        if age >86400 and titulo == problema and feito == False:
             temIgual = True
         i += 1
     payload = {'query':  'mutation{createCard(input: {pipe_id:302763672, title: "Novo Card", fields_attributes: [{field_id: "qual_o_serial_da_m_quina", field_value: "%s"} {field_id: "qual_o_componente_afetado", field_value: "%s"}{field_id: "problema", field_value: "%s"}{field_id: "mais_informa_es", field_value: "A %s da máquina de serial %s atingiu um uso de %.2f. Valor fora do limite estabelecido de %.2f"}]}){card {title}}}' % (serial, componente, problema, componente, serial, valorAtual, metrica)}
@@ -204,12 +205,13 @@ def info():
 
 
   # Insert no banco a cada 20s definidos no time.sleep      
-def insertPeriodico(idMaquina, serialMaquina):
+def insertPeriodico(tokenPipefy,idMaquina, serialMaquina):
     global numeroRegistros
     metricaCpu = select(f"select capturaMin, capturaMax from metrica join componente on idMetrica = fkMetrica where fkMaquina = {idMaquina[0]} and nomeComponente like 'CPU%'")
     metricaRam = select(f"select capturaMin, capturaMax from metrica join componente on idMetrica = fkMetrica where fkMaquina = {idMaquina[0]} and nomeComponente like 'RAM%'")
-    print(metricaRam)
-    time.sleep(5)
+    if len(metricaRam) <= 0 or len(metricaCpu) <= 0:
+        print(f"Atenção, esta máquina possui componentes que não têm métricas cadastradas! Portanto, não será capaz de abrir chamados\n Para atribuir métricas acesse a dashboard do site")
+        time.sleep(5)
     idUsuario = select(f'select idUsuario from usuario join empresa on idEmpresa = usuario.fkEmpresa join maquina on idEmpresa = maquina.fkEmpresa where idMaquina = {idMaquina[0]};')
     
     inicio = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -231,29 +233,27 @@ def insertPeriodico(idMaquina, serialMaquina):
                 freqCpu = round(cpu_freq().current,0)
             
                 
-
-                if usoAtualMemoria > metricaRam[0][1]:
-                    # client = WebClient('xoxb-4249231777856-4222605250757-vF1PjiBsrzxVo2rtfjGY4CDi')
-                    # response = client.chat_postMessage(channel = 'C046JHG2RPF', text = 'ALERTA! Uso da memória RAM acima de 80%!')
+                if len(metricaRam) <= 0 or len(metricaCpu) <= 0:
+                    if usoAtualMemoria > metricaRam[0][1]:
+                        # client = WebClient('xoxb-4249231777856-4222605250757-vF1PjiBsrzxVo2rtfjGY4CDi')
+                        # response = client.chat_postMessage(channel = 'C046JHG2RPF', text = 'ALERTA! Uso da memória RAM acima de 80%!')
                     
-                    abrirChamado('RAM', serialMaquina, usoAtualMemoria, metricaRam[0][1])
-                if usoCpuPorc > metricaCpu[0][1]:
-                    # client = WebClient('xoxb-4249231777856-4222605250757-vF1PjiBsrzxVo2rtfjGY4CDi')
-                    # response = client.chat_postMessage(channel = 'C046JHG2RPF', text = 'ALERTA! Uso da CPU acima de 80%!')
-                    abrirChamado('CPU', serialMaquina, usoAtualMemoria, metricaCpu[0][1])    
+                        abrirChamado(tokenPipefy, 'RAM', serialMaquina, usoAtualMemoria, metricaRam[0][1])
+                    if usoCpuPorc > metricaCpu[0][1]:
+                        # client = WebClient('xoxb-4249231777856-4222605250757-vF1PjiBsrzxVo2rtfjGY4CDi')
+                        # response = client.chat_postMessage(channel = 'C046JHG2RPF', text = 'ALERTA! Uso da CPU acima de 80%!')
+                        abrirChamado(tokenPipefy, 'CPU', serialMaquina, usoAtualMemoria, metricaCpu[0][1])    
 
-                if usoAtualMemoria < metricaRam[0][0]:
-                    # client = WebClient('xoxb-4249231777856-4222605250757-vF1PjiBsrzxVo2rtfjGY4CDi')
-                    # response = client.chat_postMessage(channel = 'C046JHG2RPF', text = 'ALERTA! Uso da memória RAM abaixo de 5%!')
-                    abrirChamado('RAM', serialMaquina, usoAtualMemoria, metricaRam[0][0])    
+                    if usoAtualMemoria < metricaRam[0][0]:
+                        # client = WebClient('xoxb-4249231777856-4222605250757-vF1PjiBsrzxVo2rtfjGY4CDi')
+                        # response = client.chat_postMessage(channel = 'C046JHG2RPF', text = 'ALERTA! Uso da memória RAM abaixo de 5%!')
+                        abrirChamado(tokenPipefy, 'RAM', serialMaquina, usoAtualMemoria, metricaRam[0][0])    
 
-                if usoCpuPorc < metricaCpu[0][0]:
-                    # client = WebClient('xoxb-4249231777856-4222605250757-vF1PjiBsrzxVo2rtfjGY4CDi')
-                    # response = client.chat_postMessage(channel = 'C046JHG2RPF', text = 'ALERTA! Uso da CPU abaixo de 5%!')
-                    abrirChamado('CPU', serialMaquina, usoAtualMemoria, metricaCpu[0][0])
-                if usoCpuPorc < 5:
-                    client = WebClient('xoxb-4249231777856-4222605250757-vF1PjiBsrzxVo2rtfjGY4CDi')
-                    response = client.chat_postMessage(channel = 'C046JHG2RPF', text = 'ALERTA! Uso da CPU abaixo de 5%!')
+                    if usoCpuPorc < metricaCpu[0][0]:
+                        # client = WebClient('xoxb-4249231777856-4222605250757-vF1PjiBsrzxVo2rtfjGY4CDi')
+                        # response = client.chat_postMessage(channel = 'C046JHG2RPF', text = 'ALERTA! Uso da CPU abaixo de 5%!')
+                        abrirChamado(tokenPipefy, 'CPU', serialMaquina, usoAtualMemoria, metricaCpu[0][0])
+
 
                 particoes = []
                 if sistema == "Windows":

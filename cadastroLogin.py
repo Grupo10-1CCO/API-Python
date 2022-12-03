@@ -28,7 +28,9 @@ def login():
 
     else: 
         os.system(codeCleaner)
-        print("\033[1mSucesso no Login\033[0m\n\nEssa máquina está sendo monitorada\nAperte 'S' para interromper\n")
+        print("\033[1mSucesso no Login\033[0m\n\n")
+        keyPipefy =  input('Digite seu Token do Pipefy(Ex.: Bearer 84ho4fhie8...): ')
+        print("Essa máquina está sendo monitorada\nAperte 'S' para interromper\n")
         
         
         
@@ -36,9 +38,9 @@ def login():
         time.sleep(2)
         if len(idMaquina) != 0:
             print(idMaquina[0][0])
-            time.sleep(3)
             
-            insertPeriodico(idMaquina[0], serialMaquina)
+            
+            insertPeriodico(keyPipefy, idMaquina[0], serialMaquina)
             return dados
         else:
             print('\033[1mFalha em Inserir os dados\033[0m\n\Serial inválido')
