@@ -78,7 +78,7 @@ def cadastro():
             time.sleep(5)
                 
             dados = cadastroComponentes(idEmpresa)
-            if dados > 0:
+            if dados != None or dados > 0:
                     
                 return 0
             else:
