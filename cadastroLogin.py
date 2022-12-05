@@ -112,14 +112,10 @@ def cadastroComponentes(idEmpresa):
     for j in particoes:
         porcentagemOcupados.append(round(disk_usage(j).total / 1024 / 1024 / 1024, 1))
 
-    freqCpu = f'{round(cpu_freq().max, 2)}Mhz'
-    freqMinCpu = f'{cpu_freq().min, 2}Mhz'
-    qtdCores = cpu_count()
-    qtdThreads = cpu_count(logical=False)
+    
     processador = 'CPU ' + cpuinfo.get_cpu_info()['brand_raw']
     discoPrincipal = particoes[0]
     capacidadeDiscoPrincipal = porcentagemOcupados[0]
-    memoriaTotal = f'{conversao_bytes(virtual_memory().total, 3)}GB'
     nomeServidor = input("Digite o apelido do servidor: ")
 
     arquitetura = cpuinfo.get_cpu_info()['arch']
