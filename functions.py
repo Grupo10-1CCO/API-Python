@@ -163,7 +163,6 @@ def info():
     os.system(codeCleaner)
     
     # Capturando valores os dados da CPU através da PSUTIL
-    freqCpu = f'{round(cpu_freq().max, 0)}Mhz'
     qtdCores = cpu_count()
     qtdThreads = cpu_count(logical=False)
     tempoGasto = f"{round(cpu_times().user / 60 / 60, 2)} Horas"
@@ -194,7 +193,6 @@ def info():
     print("\033[1mProcessador:\033[0m", processador)
     print("\033[1mQuantidade total de núcleos do processador:\033[0m", qtdCores)
     print("\033[1mQuantidade de Threads:\033[0m ", qtdThreads)
-    print("\033[1mFrequência do processador:\033[0m ", freqCpu)
     print("\033[1mTotal de RAM :\033[0m", memoriaTotal)
     print("\033[1mTempo gasto pelo usuário no computador desde a última vez em que foi ligado:\033[0m", tempoGasto)
 
@@ -229,7 +227,6 @@ def insertPeriodico(tokenPipefy,idMaquina, serialMaquina):
         
                 usoAtualMemoria = virtual_memory().percent
                 usoCpuPorc = cpu_percent()
-                freqCpu = round(cpu_freq().current,0)
             
                 
                 if len(metricaRam) <= 0 or len(metricaCpu) <= 0:
