@@ -229,7 +229,7 @@ def insertPeriodico(tokenPipefy,idMaquina, serialMaquina):
                 usoCpuPorc = cpu_percent()
             
                 
-                if len(metricaRam) <= 0 or len(metricaCpu) <= 0:
+                if len(metricaRam) >= 0 or len(metricaCpu) >= 0:
                     if usoAtualMemoria > metricaRam[0][1]:
                         # client = WebClient('xoxb-4249231777856-4222605250757-vF1PjiBsrzxVo2rtfjGY4CDi')
                         # response = client.chat_postMessage(channel = 'C046JHG2RPF', text = 'ALERTA! Uso da memória RAM acima de 80%!')
