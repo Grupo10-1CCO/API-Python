@@ -10,15 +10,13 @@ from random import randint #Gerando um número serial aleatorio
 from http import server
 from slack_sdk import WebClient
 from pydoc import doc
-from turtle import title
 import requests
 import json
 from json import loads
 from urllib3 import PoolManager
 import pyautogui
 from pynput import keyboard
-import pyautogui
-from pynput import keyboard
+
 
 # Coletando qual o sistema operacional
 sistema = platform.system()
@@ -217,12 +215,13 @@ def insertPeriodico(tokenPipefy,idMaquina, serialMaquina):
     inicio = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
     def on_press(key):
-        
-        if key.char == "s":
-            insert(f"insert into Relatorio (fkUsuario, fkMaquina, numeroRegistros, numeroAlertas, inicio, fim) values({idUsuario[0][0]}, {idMaquina[0]}, {numeroRegistros}, {chamados}, '{inicio}', '{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}')")
-            print("Encerrando API...")
-            pyautogui.hotkey("Ctrl","c")
-
+        try:
+            if key.char == "s":
+                insert(f"insert into Relatorio (fkUsuario, fkMaquina, numeroRegistros, numeroAlertas, inicio, fim) values({idUsuario[0][0]}, {idMaquina[0]}, {numeroRegistros}, {chamados}, '{inicio}', '{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}')")
+                print("Encerrando API...")
+                pyautogui.hotkey("Ctrl","c")
+        except AttributeError:
+            key
     while True:
         
             with keyboard.Listener(

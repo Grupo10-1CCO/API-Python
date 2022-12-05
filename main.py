@@ -23,7 +23,7 @@ def menu(userId, nome, idMaquina):
     opcaoUser = input(f"\033[1mHardware Monitor\033[0m\n\n Bem vindo(a) {nome}!!\n\n[1] - Monitorar processos atuais da máquina \n[2] - Verificar informações sobre o dispositivo\n[3] - Análise de dados\n[4] - Documentar meus dados\n[5] - Sair\n\n\033[1mUsuário:\033[0m ")
 
     # Trazer informações dos componentes no terminal 
-    while opcaoUser == "1":
+    while opcasoUser == "1":
         os.system(codeCleaner)
         res = input("\033[1tComo você deseja visualizar os dados?\033[0m \n\n[1] - Painel \n[2] - Informações detalhadas \n[3] - Sair\n\n\033[1mUsuário:\033[0m ")
         
