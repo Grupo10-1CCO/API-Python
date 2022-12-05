@@ -158,14 +158,16 @@ def cadastroComponentes(idEmpresa):
     retorno3 = insert(query3)
 
     
+    if retorno3 != None and retorno != None:
+        if (retorno > 0) and (retorno3 >0):
+            print("Cadastro dos componentes realizado com sucesso, seu cadastro está completo.")
+            time.sleep(2)
+            print(f"O serial do servidor é '{serial}'. Este número será utilizado para realizar o monitoramento")
+            time.sleep(10)
+            return True
+        else:    
+            print("erro")
+            time.sleep(2)
+            return False
+    print(f"O serial do servidor é '{serial}'. Este número será utilizado para realizar o monitoramento")
 
-    if (retorno > 0) and (retorno3 >0):
-        print("Cadastro dos componentes realizado com sucesso, seu cadastro está completo.")
-        time.sleep(2)
-        print(f"O serial do servidor é '{serial}'. Este número será utilizado para realizar o monitoramento")
-        time.sleep(10)
-        return True
-    else:    
-        print("erro")
-        time.sleep(2)
-        return False
