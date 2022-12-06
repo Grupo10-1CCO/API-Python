@@ -16,6 +16,7 @@ from json import loads
 from urllib3 import PoolManager
 import pyautogui
 from pynput import keyboard
+import speedtest
 
 
 # Coletando qual o sistema operacional
@@ -227,28 +228,34 @@ def insertPeriodico(tokenPipefy,idMaquina, serialMaquina):
         
                 usoAtualMemoria = virtual_memory().percent
                 usoCpuPorc = cpu_percent()
-            
                 
-                if len(metricaRam) > 0 or len(metricaCpu) > 0:
-                    if usoAtualMemoria > metricaRam[0][1]:
-                        # client = WebClient('xoxb-4249231777856-4222605250757-vF1PjiBsrzxVo2rtfjGY4CDi')
-                        # response = client.chat_postMessage(channel = 'C046JHG2RPF', text = 'ALERTA! Uso da memória RAM acima de 80%!')
-                    
-                        abrirChamado(tokenPipefy, 'RAM', serialMaquina, usoAtualMemoria, metricaRam[0][1])
-                    if usoCpuPorc > metricaCpu[0][1]:
-                        # client = WebClient('xoxb-4249231777856-4222605250757-vF1PjiBsrzxVo2rtfjGY4CDi')
-                        # response = client.chat_postMessage(channel = 'C046JHG2RPF', text = 'ALERTA! Uso da CPU acima de 80%!')
-                        abrirChamado(tokenPipefy, 'CPU', serialMaquina, usoAtualMemoria, metricaCpu[0][1])    
+                st = speedtest.Speedtest(secure=True)
 
-                    if usoAtualMemoria < metricaRam[0][0]:
-                        # client = WebClient('xoxb-4249231777856-4222605250757-vF1PjiBsrzxVo2rtfjGY4CDi')
-                        # response = client.chat_postMessage(channel = 'C046JHG2RPF', text = 'ALERTA! Uso da memória RAM abaixo de 5%!')
-                        abrirChamado(tokenPipefy, 'RAM', serialMaquina, usoAtualMemoria, metricaRam[0][0])    
+                dwnld = st.download()/1024/1024
+                upld = st.upload()/1024/1024
+                
+            
+                if metricaCpu == None or metricaRam == None:
+                    if len(metricaRam) > 0 or len(metricaCpu) > 0:
+                        if usoAtualMemoria > metricaRam[0][1]:
+                            # client = WebClient('xoxb-4249231777856-4222605250757-vF1PjiBsrzxVo2rtfjGY4CDi')
+                            # response = client.chat_postMessage(channel = 'C046JHG2RPF', text = 'ALERTA! Uso da memória RAM acima de 80%!')
+                        
+                            abrirChamado(tokenPipefy, 'RAM', serialMaquina, usoAtualMemoria, metricaRam[0][1])
+                        if usoCpuPorc > metricaCpu[0][1]:
+                            # client = WebClient('xoxb-4249231777856-4222605250757-vF1PjiBsrzxVo2rtfjGY4CDi')
+                            # response = client.chat_postMessage(channel = 'C046JHG2RPF', text = 'ALERTA! Uso da CPU acima de 80%!')
+                            abrirChamado(tokenPipefy, 'CPU', serialMaquina, usoAtualMemoria, metricaCpu[0][1])    
 
-                    if usoCpuPorc < metricaCpu[0][0]:
-                        # client = WebClient('xoxb-4249231777856-4222605250757-vF1PjiBsrzxVo2rtfjGY4CDi')
-                        # response = client.chat_postMessage(channel = 'C046JHG2RPF', text = 'ALERTA! Uso da CPU abaixo de 5%!')
-                        abrirChamado(tokenPipefy, 'CPU', serialMaquina, usoAtualMemoria, metricaCpu[0][0])
+                        if usoAtualMemoria < metricaRam[0][0]:
+                            # client = WebClient('xoxb-4249231777856-4222605250757-vF1PjiBsrzxVo2rtfjGY4CDi')
+                            # response = client.chat_postMessage(channel = 'C046JHG2RPF', text = 'ALERTA! Uso da memória RAM abaixo de 5%!')
+                            abrirChamado(tokenPipefy, 'RAM', serialMaquina, usoAtualMemoria, metricaRam[0][0])    
+
+                        if usoCpuPorc < metricaCpu[0][0]:
+                            # client = WebClient('xoxb-4249231777856-4222605250757-vF1PjiBsrzxVo2rtfjGY4CDi')
+                            # response = client.chat_postMessage(channel = 'C046JHG2RPF', text = 'ALERTA! Uso da CPU abaixo de 5%!')
+                            abrirChamado(tokenPipefy, 'CPU', serialMaquina, usoAtualMemoria, metricaCpu[0][0])
 
 
                 particoes = []
@@ -272,7 +279,7 @@ def insertPeriodico(tokenPipefy,idMaquina, serialMaquina):
 
                 dataHora = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 marcaCpu = 'CPU ' + cpuinfo.get_cpu_info()['brand_raw']
-                query = f"INSERT INTO Dados (registro, momento, fkComponente) VALUES ({usoCpuPorc}, '{dataHora}', (select idComponente from componente where nomeComponente = '{marcaCpu}' and fkMaquina = {idMaquina[0]})), ({usoAtualMemoria}, '{dataHora}', (select idComponente from componente where nomeComponente = 'RAM' and fkMaquina = {idMaquina[0]})), ({usoDisco}, '{dataHora}', (select idComponente from componente where nomeComponente = 'Disco {particoes[0]}\\' and fkMaquina = {idMaquina[0]}));"
+                query = f"INSERT INTO Dados (registro, momento, fkComponente) VALUES ({usoCpuPorc}, '{dataHora}', (select idComponente from componente where nomeComponente = '{marcaCpu}' and fkMaquina = {idMaquina[0]})), ({usoAtualMemoria}, '{dataHora}', (select idComponente from componente where nomeComponente = 'RAM' and fkMaquina = {idMaquina[0]})), ({usoDisco}, '{dataHora}', (select idComponente from componente where nomeComponente = 'Disco {particoes[0]}\\' and fkMaquina = {idMaquina[0]})), (round({dwnld},1), '{dataHora}', (select idComponente from componente where nomeComponente = 'redeDwnl' and fkMaquina = {idMaquina[0]})), (round({upld},1), '{dataHora}', (select idComponente from componente where nomeComponente = 'redeUpld' and fkMaquina = {idMaquina[0]}));"
                 
 
                 insert(query)

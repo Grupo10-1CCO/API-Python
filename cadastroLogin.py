@@ -144,7 +144,7 @@ def cadastroComponentes(idEmpresa):
         # print("Disco Principal " +discoPrincipal)
         # print("Tamanho Disco " + str(capacidadeDiscoPrincipal))
         # time.sleep(18)
-        query3 = f"insert into Componente (nomeComponente, tamanho, fkMaquina, fkMedida, fkMetrica) values ('{processador}', NULL, {idMaquina[0][0]}, 1, NULL), ('RAM', {conversao_bytes(virtual_memory().total, 3)}, {idMaquina[0][0]},  1, NULL), ('Disco {discoPrincipal}\\', {capacidadeDiscoPrincipal}, {idMaquina[0][0]}, 1, NULL)" 
+        query3 = f"insert into Componente (nomeComponente, tamanho, fkMaquina, fkMedida, fkMetrica) values ('{processador}', NULL, {idMaquina[0][0]}, 1, NULL), ('RAM', {conversao_bytes(virtual_memory().total, 3)}, {idMaquina[0][0]},  1, NULL), ('Disco {discoPrincipal}\\', {capacidadeDiscoPrincipal}, {idMaquina[0][0]}, 1, NULL), ('redeDwnl', NULL, {idMaquina[0][0]}, 8, NULL), ('redeUpld', NULL, {idMaquina[0][0]}, 8, NULL)"
         
         time.sleep(3)
     elif sistema == "Linux":
