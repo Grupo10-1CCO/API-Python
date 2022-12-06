@@ -36,7 +36,7 @@ def abrirChamado(tokenPipefy, componente, serial, valorAtual, metrica):
     headers = {
         "accept": "application/json",
         "content-type": "application/json",
-        "authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJ1c2VyIjp7ImlkIjozMDIwODY5MjUsImVtYWlsIjoiam9hby5jb25jZWljYW9Ac3B0ZWNoLnNjaG9vbCIsImFwcGxpY2F0aW9uIjozMDAyMDc0NzZ9fQ.SRZx-58-x8HKCSTanwLU7MzGVoenpQwrmFpDppWzJduSo8NDJKtAw65ECGCGWEOO_1SJ65LnacQmgQ0aEIunXA"
+        "authorization": f"Bearer {tokenPipefy}"
     }
 
     response = requests.post(url, json=query, headers=headers)
